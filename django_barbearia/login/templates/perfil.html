@@ -61,7 +61,7 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p>Você ainda não possui agendamentos.</p>
+            <p class="msg-default">Você ainda não possui agendamentos.</p>
         {% endif %}
         <a href="{% url 'logout' %}" class="logoutF"><p class="logout"><i data-lucide="log-out" class="icon-logout"></i> Sair</p></a>
         </main>

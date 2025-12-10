@@ -433,10 +433,15 @@ async function sendAgendamento(){
         return;
     }
     const data = await response.json();
-    if(data.sucesso && data.redirect_url){
+    if (!data.sucesso){
+      document.querySelector('.errorForm').textContent = data.mensagem;
+      if(data.redirect_url){
         window.location.href = data.redirect_url;
-    } else {
-        alert('Resposta inesperada do servidor.');
+      }
+      return
+    }
+    if (data.redirect_url) {
+        window.location.href = data.redirect_url;
     }
   } catch(error){
     alert('Erro ao enviar agendamento');

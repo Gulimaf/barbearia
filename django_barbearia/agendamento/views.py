@@ -8,6 +8,7 @@ from django.utils import timezone
 import pytz
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 # Create your views here.
 
 def index(request):
@@ -120,9 +121,15 @@ def renderAgendamentoThird(request):
         print(dados_json)
         return render(request, 'resumo.html',{'dados_json' : json.dumps(dados_json)})
     return JsonResponse({'ERRO':'Método não permitido'},status=405)
-@login_required
 def agendar(request):
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.error(request, "Você deve fazer login para prosseguir com o agendamento")
+            return JsonResponse({
+            'sucesso': False,
+            'mensagem': "Você deve fazer login para fazer o agendamento.",
+            'redirect_url': reverse('login')   # ajuste para o nome da sua URL
+            })
         dia = request.session.get('diaAgendamento')
         hora = request.session.get('horaEscolhida')
         data_agendada = datetime.strptime(f"{dia} {hora}", "%Y-%m-%d %H:%M")
@@ -136,4 +143,4 @@ def agendar(request):
             valor=valor,
         )
         return JsonResponse({'sucesso': True, 'redirect_url': reverse('agendar')})
-    return render(request, 'success.html')
+    return render(request, 'resumo.html')

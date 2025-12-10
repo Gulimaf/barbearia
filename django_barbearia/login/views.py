@@ -224,7 +224,7 @@ def renderPrecisaConfirmar(request):
 
 def logoutFunction(request):
     logout(request)
-    return render(request, 'index.html')
+    return redirect('home')
 
 def confirmar_agendamento(request, id):
     ag = get_object_or_404(Agendamentos, id=id, usuario=request.user)
