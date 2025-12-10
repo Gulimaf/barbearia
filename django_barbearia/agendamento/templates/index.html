@@ -28,6 +28,7 @@
             <li><a href="{% url 'agendamento' %}"><i data-lucide="clipboard-clock" class="clipboard-clock icon-nav"></i>AGENDAR</a></li>
             <li><a href="#about"><i data-lucide="at-sign" class="at-sign icon-nav"></i>SOBRE</a></li>
             <li><a href="#services"><i data-lucide="layout-list" class="layout-list icon-nav"></i>SERVIÇOS</a></li>
+            <li><a href="{% url 'homePerfil' %}"><i data-lucide="user" class="layout-list icon-nav"></i>PERFIL</a></li>
         </ul>
     </nav>
     <section class="home" id="home">
@@ -65,7 +66,6 @@
         <p class="maren">SERVICOS</p>
         <main class="services-content"></main>
     </section>
-    
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="{% static 'js/script.js' %}"></script>
 </body>

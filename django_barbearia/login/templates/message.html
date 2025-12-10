@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <body style="font-family: Arial; padding: 20px;">
+
+    <p style="font-size: 17px;">
+      {{ mensagem_texto }}
+    </p>
+
+    <a href="{{ link_botao }}"
+       style="padding: 12px 25px;
+              background-color: #2563eb;
+              color: white;
+              text-decoration: none;
+              border-radius: 8px;
+              font-size: 16px;
+              display: inline-block;
+              margin-top: 20px;">
+        {{ texto_botao }}
+    </a>
+
+    <p style="margin-top: 25px; font-size: 14px; color: gray;">
+      Ou copie este link:
+    </p>
+
+    <p style="word-break: break-all; color: #2563eb;">
+      {{ link_botao }}
+    </p>
+
+  </body>
+</html>

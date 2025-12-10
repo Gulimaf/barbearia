@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <meta name="csrf-token" content="{{ csrf_token }}">
-    <link href="https://fonts.cdnfonts.com/css/bebas-neue" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -25,28 +23,29 @@
             <li><a href="{% url 'home' %}"><i data-lucide="house" class="house icon-nav"></i>INÍCIO</a></li>
             <li><a href="{% url 'home' %}#about"><i data-lucide="at-sign" class="at-sign icon-nav"></i>SOBRE</a></li>
             <li><a href="{% url 'home' %}#services"><i data-lucide="layout-list" class="layout-list icon-nav"></i>SERVIÇOS</a></li>
-        </ul>
+            <li><a href="{% url 'homePerfil' %}"><i data-lucide="user" class="layout-list icon-nav"></i>PERFIL</a></li>
+          </ul>
     </nav>
 <section id="main-content-page-agendamento" class="main-content-page-agendamento">
   <p class="maren">AGENDAMENTO</p>
   <main>
-    <div class="timeline">
-      <div class="timeline-step ativo">
-          <div class="circle"><i data-lucide="check"></i></div>
-          <span>SERVIÇOS</span>
-      </div>
-      <div class="line"></div>
-      <div class="timeline-step ativo">
-          <div class="circle">2</div>
-          <span>DATA E HORA</span>
-      </div>
-      <div class="line"></div>
-      <div class="timeline-step">
-          <div class="circle">3</div>
-          <span>RESUMO</span>
-      </div>
-    </div>
-  <div class="calendar-section">
+  <div class="timeline">
+                <div class="timeline-step ativo">
+                    <div class="circle"><i data-lucide="check"></i></div>
+                    <span>SERVIÇOS</span>
+                </div>
+                <div class="line"></div>
+                <div class="timeline-step ativo">
+                    <div class="circle">2</div>
+                    <span>DATA E HORA</span>
+                </div>
+                <div class="line"></div>
+                <div class="timeline-step">
+                    <div class="circle">3</div>
+                    <span>RESUMO</span>
+                </div>
+            </div>
+  <div class="calendar-section calendario-agendamento">
     <div id="calendar">
       <div class="calendar-header">
         <i data-lucide="circle-arrow-left" class="btn"onclick="mesAnterior()"></i>
@@ -59,7 +58,7 @@
     <div class="resultado-horas"></div>
   </div>
   <div class="container-next-btn">
-    <button class="next-btn btn-horario" style="border: 0;cursor: pointer;">PRÓXIMO</button>
+    <button class="btn-horario next-btn" style="border: 0;cursor: pointer;">PRÓXIMO</button>
   </div>
   </main>
 </section>

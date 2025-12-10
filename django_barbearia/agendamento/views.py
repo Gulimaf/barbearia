@@ -7,6 +7,7 @@ from datetime import datetime, time
 from django.utils import timezone
 import pytz
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def index(request):
@@ -119,34 +120,20 @@ def renderAgendamentoThird(request):
         print(dados_json)
         return render(request, 'resumo.html',{'dados_json' : json.dumps(dados_json)})
     return JsonResponse({'ERRO':'Método não permitido'},status=405)
-
+@login_required
 def agendar(request):
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-        except:
-            return JsonResponse({'erro':'Corpo da requisição inválido'}, status=400)
-        telefone = data.get('userTelefone')
-        if not telefone:
-            return JsonResponse({'erro':'Telefone não fornecido'},status=400)
-        request.session["userTelefone"] = telefone
-        request.session.save()
-        print(request.session.get("userTelefone"))
         dia = request.session.get('diaAgendamento')
         hora = request.session.get('horaEscolhida')
         data_agendada = datetime.strptime(f"{dia} {hora}", "%Y-%m-%d %H:%M")
         servico = request.session.get('servicos_escolhidos',[])
         valor = request.session.get('valorServicos')
-        telefoneSession = request.session.get('userTelefone')
         ag = Agendamentos.objects.create(
-            telefone_cliente=telefoneSession,
+            usuario=request.user,
             data=data_agendada,
             servico=", ".join(servico),
-            status='pendente'
+            status='pendente',
+            valor=valor,
         )
         return JsonResponse({'sucesso': True, 'redirect_url': reverse('agendar')})
-    elif request.method == 'GET':
-        if 'userTelefone' not in request.session:
-            return redirect('agendar')
-        return render(request, 'success.html')
-    return JsonResponse({'ERRO':'Método não permitido'},status=405)
+    return render(request, 'success.html')

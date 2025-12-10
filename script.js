@@ -208,11 +208,7 @@ function gerarCalendario(mes, ano) {
       divDia.classList.add('selecionado');
       diaSelecionado = divDia;
       dataFormatada = `${ano}-${String(mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
-      if(document.querySelector('.calendario-agendamento')){
-        enviarData(dataFormatada);
-      } else if(document.querySelector('.calendario-staff')){
-        buscarAgendamento(dataFormatada)
-      }
+      enviarData(dataFormatada);
     });
 
     containerDatas.appendChild(divDia);
@@ -416,6 +412,11 @@ function getResumo(){
 }
 async function sendAgendamento(){
   try{
+    const telefone = document.querySelector('.foneUser').value;
+    let telefoneLimpo = telefone.replace(/[^a-zA-Z0-9]/g, '');
+    if(!telefone){
+      alert('Escreva seu numero de telefone');
+    }
     const csrfToken = getCsrfToken();
     const headers = {
             'Content-Type' : 'application/json',
@@ -424,7 +425,9 @@ async function sendAgendamento(){
           const init = {
             method:'POST',
             headers:headers,
-            body: JSON.stringify({})
+            body : JSON.stringify({
+              userTelefone:telefoneLimpo
+            })
           }
     const response = await fetch('/agendar/',init);
     if (!response.ok) {
@@ -443,63 +446,6 @@ async function sendAgendamento(){
     console.log('ERRO ao enviar agendamento',error);
   }
 }
-function atualizarListaAgendamentos(agendamentos) {
-  const container = document.getElementById("listaAgendamentos");
-
-    // Limpa lista
-    container.innerHTML = "";
-
-    if (!agendamentos || agendamentos.length === 0) {
-        container.innerHTML = `<p>Não há agendamentos para este dia.</p>`;
-        return;
-    }
-
-    agendamentos.forEach(a => {
-        const card = document.createElement("div");
-        card.classList.add("card-agendamento");
-
-        card.innerHTML = `
-            <div class="card-header">
-                <strong>${a.data}</strong>
-            </div>
-            <div class="card-body">
-                <p><strong>Usuário:</strong> ${a.usuario ?? "—"}</p>
-                <p><strong>Serviço:</strong> ${a.servico}</p>
-                <p><strong>Status:</strong> ${a.status ?? "—"}</p>
-                <p><strong>Valor:</strong> ${a.valor !== null ? "R$ " + a.valor.toFixed(2) : "—"}</p>
-            </div>
-        `;
-
-        container.appendChild(card);
-    });
-}
-async function buscarAgendamento(diaFormatado){
-  try{
-    const csrfToken = getCsrfToken();
-    const headers = {
-      'Content-Type' : 'application/json',
-      'X-CSRFToken' : csrfToken
-    }
-    const init = {
-      method:'POST',
-      headers:headers,
-      body : JSON.stringify({
-        dia:diaFormatado
-      })
-    }
-    const response = await fetch('perfil/buscar-agendamento/',init)
-    if (!response.ok) {
-      console.log("Erro na resposta do servidor");
-      return;
-    }
-    const data = await response.json();
-    console.log("Agendamentos recebidos:", data)
-    atualizarListaAgendamentos(data.agendamentos);
-    } catch(error){
-    alert('Erro na função buscar agendamento');
-    console.log(error);
-  }
-}
 const verificateResumo = document.querySelector('.verificateResumo');
 if (verificateResumo){
   console.log(getResumo())
@@ -510,98 +456,4 @@ if(btnEnviar){
   btnEnviar.addEventListener('click',() => {
     sendAgendamento();
   })
-}
-const eye = document.querySelector('.eye');
-if (eye) {
-  // Começa como fechado
-  eye.classList.add('fechado');
-  eye.innerHTML = '<i data-lucide="eye-off"></i>';
-  lucide.createIcons();
-
-  eye.addEventListener('click', () => {
-
-    const isClosed = eye.classList.contains('fechado');
-
-    if (isClosed) {
-      eye.classList.remove('fechado');
-      eye.classList.add('aberto');
-      eye.innerHTML = '<i data-lucide="eye"></i>';
-      lucide.createIcons();
-      document.querySelector('.senha').type = 'text';
-
-    } else {
-      eye.classList.remove('aberto');
-      eye.classList.add('fechado');
-
-      eye.innerHTML = '<i data-lucide="eye-off"></i>';
-      lucide.createIcons();
-
-      document.querySelector('.senha').type = 'password';
-    }
-  });
-}
-const forms = document.querySelectorAll('.formLogin');
-forms.forEach(form => {
-  const usernameInput = form.querySelector('.usernameInput');
-  const passInput = form.querySelector('.passInput');
-  const emailInput = form.querySelector('.emailInput');
-  const sendFormbtn = form.querySelector('.sendForm');
-  const listaObrigatoria = document.querySelector('.listaObrig');
-  if (listaObrigatoria){
-      const itens = listaObrigatoria.querySelectorAll('.itemLista');
-      itens.forEach(item => {
-        item.style.color = 'red';
-        passInput.addEventListener('keyup',function() {
-          const senhaValue = passInput.value
-          if (item.classList.contains('caracter')){
-            if (senhaValue.trim().length >= 8) item.style.color = 'green';
-            else item.style.color = 'red'
-          };
-          if (item.classList.contains('umNum')){
-            if (/\d/.test(senhaValue)) item.style.color = 'green';
-            else item.style.color = 'red';
-          };
-          if (item.classList.contains('umL')){
-            if (/[A-Z]/.test(senhaValue)) item.style.color = 'green';
-            else item.style.color = 'red';
-          };
-          if (item.classList.contains('especial')){
-            if (/[^A-Za-z0-9]/.test(senhaValue)) item.style.color = 'green';
-            else item.style.color = 'red';
-          };
-        })
-      });
-  };
-  form.addEventListener('submit', e =>{
-    let erro = false;
-    if (usernameInput && usernameInput.value.trim() === '') erro = true;
-    if (passInput && passInput.value.trim() === '') erro = true;
-    if (emailInput && emailInput.value.trim() === '') erro = true;
-    const senhaValue = passInput.value
-    const regrasSenhaInvalidas = [
-      senhaValue.length < 8,
-      !/\d/.test(senhaValue),
-      !/[A-Z]/.test(senhaValue),
-      !/[^A-Za-z0-9]/.test(senhaValue)
-    ];
-    let erroSenha = false;
-    if (regrasSenhaInvalidas.some(r => r)) erroSenha = true;
-    if (erro){
-      verificarErro('Todos os campos devem ser preenchidos',form,e,sendFormbtn)
-      return;
-    }
-    if (erroSenha){
-      verificarErro('Verifique sua senha',form,e,sendFormbtn)
-      return;
-    }
-  })
-});
-function verificarErro(msg,form,e,sendFormbtn){
-  e.preventDefault();
-  const errorExists = form.querySelector('.errorForm');
-  if (errorExists) errorExists.remove();
-  const span = document.createElement('span');
-  span.classList.add('errorForm');
-  span.innerHTML = msg; 
-  sendFormbtn.before(span);
 }
