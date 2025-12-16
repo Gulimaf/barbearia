@@ -53,8 +53,7 @@
                                 {% endif %}
                             </p>
                             <div class="card-acoes">
-                                <a class="btn-confirmar" href="agendamento/confirmar/{{ a.id }}/">Confirmar</a>
-                                <a class="btn-cancelar" href="agendamento/cancelar/{{ a.id }}/">Cancelar</a>
+                                <button class="btn-cancelar" style="border: none;" onclick="abrirConfirmacao({{a.id}})">Cancelar</button>
                             </div>
                         </div>
                     </div>
@@ -64,8 +63,14 @@
             <p class="msg-default">Você ainda não possui agendamentos.</p>
         {% endif %}
         <a href="{% url 'logout' %}" class="logoutF"><p class="logout"><i data-lucide="log-out" class="icon-logout"></i> Sair</p></a>
-        </main>
+            
+    </main>
     </section>
+    <dialog id="confirm-dialog">
+        <p>Deseja cancelar este horário?</p>
+        <button id="confirmar">OK</button>
+        <button id="fechar">Cancelar</button>
+    </dialog>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="{% static 'js/script.js' %}"></script>
 </body>

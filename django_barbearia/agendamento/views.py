@@ -139,8 +139,8 @@ def agendar(request):
             usuario=request.user,
             data=data_agendada,
             servico=", ".join(servico),
-            status='pendente',
+            status='confirmado',
             valor=valor,
         )
         return JsonResponse({'sucesso': True, 'redirect_url': reverse('agendar')})
-    return render(request, 'resumo.html')
+    return render(request, 'success.html')

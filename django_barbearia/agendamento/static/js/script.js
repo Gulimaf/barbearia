@@ -141,117 +141,75 @@ function search(data,e){
 // CALENDARIO
 //CALENDARIO
 //CALENDARIO
-let dataAtual = new Date()  ;
-let mesAtual = dataAtual.getMonth();
-let anoAtual = dataAtual.getFullYear();
 let diaSelecionado = null;
-let dataFormatada = null;
 const resultadoHoras = document.querySelector('.resultado-horas');
-function gerarCalendario(mes, ano) {
+function gerarCalendarioSemana() {
   const containerDatas = document.querySelector('.calendar-dates');
   const containerDias = document.querySelector('.calendar-days');
   const nomeMes = document.querySelector('#titulo-mes');
-  const diaSemanaEl = document.querySelector('#dia-semana');
-  const diaMesEl = document.querySelector('#dia-mes');
-  if(containerDatas && containerDias){
-    containerDatas.innerHTML = '';
-    containerDias.innerHTML = '';
-  }
-
-  const diasDaSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  if (!containerDatas || !containerDias) return;
+  containerDatas.innerHTML = '';
+  containerDias.innerHTML = '';
+  const diasDaSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
   diasDaSemana.forEach(dia => {
     const div = document.createElement('div');
     div.classList.add('day-name');
     div.textContent = dia;
     containerDias.appendChild(div);
   });
+  const hoje = new Date();
+  const diaSemana = hoje.getDay();
+  const deslocamento = diaSemana === 0 ? 6 : diaSemana - 1;
+  const segunda = new Date(hoje);
+  segunda.setDate(hoje.getDate() - deslocamento);
+  const nome = segunda.toLocaleString('pt-BR', { month: 'long' });
+  nomeMes.textContent = `${nome.charAt(0).toUpperCase() + nome.slice(1)} ${segunda.getFullYear()}`;
 
-  const dataHoje = new Date();
-  const primeiroDiaSemana = new Date(ano, mes, 1).getDay();
-  const totalDiasMes = new Date(ano, mes + 1, 0).getDate();
-  const totalDiasMesAnterior = new Date(ano, mes, 0).getDate();
+  for (let i = 0; i < 7; i++) {
+    const dia = new Date(segunda);
+    dia.setDate(segunda.getDate() + i);
 
-  const nome = new Date(ano, mes).toLocaleString('pt-BR', { month: 'long' });
-  nomeMes.textContent = `${nome.charAt(0).toUpperCase() + nome.slice(1)} ${ano}`;
+    const numero = dia.getDate();
+    const ano = dia.getFullYear();
+    const mes = dia.getMonth() + 1;
 
-  const diasAnteriores = primeiroDiaSemana;
-  for (let i = diasAnteriores; i > 0; i--) {
-    const dia = totalDiasMesAnterior - i + 1;
-    const div = document.createElement('div');
-    div.classList.add('date', 'fora-do-mes');
-    div.textContent = dia;
-    containerDatas.appendChild(div);
-  }
-
-  for (let dia = 1; dia <= totalDiasMes; dia++) {
     const divDia = document.createElement('div');
     divDia.classList.add('date');
-    divDia.textContent = dia;
+    divDia.textContent = numero;
 
-    // Marcar o dia de hoje
+    // Marcar hoje
     if (
-      dia === dataHoje.getDate() &&
-      mes === dataHoje.getMonth() &&
-      ano === dataHoje.getFullYear()
+      numero === hoje.getDate() &&
+      mes === hoje.getMonth() + 1 &&
+      ano === hoje.getFullYear()
     ) {
       divDia.classList.add('hoje');
     }
 
-    // Adicionar evento de clique
+    // Evento de clique
     divDia.addEventListener('click', () => {
-      // Remover destaque do dia anterior
       if (diaSelecionado) {
         diaSelecionado.classList.remove('selecionado');
       }
 
-      // Adicionar destaque ao novo dia
       divDia.classList.add('selecionado');
       diaSelecionado = divDia;
-      dataFormatada = `${ano}-${String(mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
-      if(document.querySelector('.calendario-agendamento')){
+
+      dataFormatada = `${ano}-${String(mes).padStart(2, '0')}-${String(numero).padStart(2, '0')}`;
+
+      if (document.querySelector('.calendario-agendamento')) {
         enviarData(dataFormatada);
-      } else if(document.querySelector('.calendario-staff')){
-        buscarAgendamento(dataFormatada)
+      } else if (document.querySelector('.calendario-staff')) {
+        buscarAgendamento(dataFormatada);
       }
     });
 
     containerDatas.appendChild(divDia);
   }
-
-  const totalCelas = diasAnteriores + totalDiasMes;
-  const celulasNecessarias = Math.ceil(totalCelas / 7) * 7;
-  const diasSeguinte = celulasNecessarias - totalCelas;
-
-  for (let i = 1; i <= diasSeguinte; i++) {
-    const div = document.createElement('div');
-    div.classList.add('date', 'fora-do-mes');
-    div.textContent = i;
-    containerDatas.appendChild(div);
-  }
-}
-
-function mesAnterior() {
-  mesAtual--;
-  if (mesAtual < 0) {
-    mesAtual = 11;
-    anoAtual--;
-  }
-  diaSelecionado = null; // limpa seleção
-  gerarCalendario(mesAtual, anoAtual);
-}
-
-function proximoMes() {
-  mesAtual++;
-  if (mesAtual > 11) {
-    mesAtual = 0;
-    anoAtual++;
-  }
-  diaSelecionado = null;
-  gerarCalendario(mesAtual, anoAtual);
 }
 const verificateCalendar = document.querySelector('.calendar-section');
 if (verificateCalendar){
-  gerarCalendario(mesAtual, anoAtual);
+  gerarCalendarioSemana();
 }
 async function enviarData(diaFormatado) {
         try{
@@ -450,8 +408,6 @@ async function sendAgendamento(){
 }
 function atualizarListaAgendamentos(agendamentos) {
   const container = document.getElementById("listaAgendamentos");
-
-    // Limpa lista
     container.innerHTML = "";
 
     if (!agendamentos || agendamentos.length === 0) {
@@ -609,4 +565,46 @@ function verificarErro(msg,form,e,sendFormbtn){
   span.classList.add('errorForm');
   span.innerHTML = msg; 
   sendFormbtn.before(span);
+}
+const btnCancelar = document.querySelector('.btn-cancelar');
+async function cancelarAgendamento(id) {
+  try{
+    const csrfToken = getCsrfToken();
+    const headers = {
+      'Content-Type' : 'application/json',
+      'X-CSRFToken' : csrfToken
+    }
+    const init = {
+      method:'POST',
+      headers:headers,
+      body : JSON.stringify({ id })
+    }
+    const response = await fetch(`/perfil/agendamento/cancelar/${id}/`, init)
+    const data = await response.json();
+    if (data.status === 'ok'){
+      if (data.redirect_url) {
+        window.location.href = data.redirect_url;
+      }
+    }
+  } catch(e){
+
+  }
+}
+let agendamentoId = null;
+const dialog = document.getElementById('confirm-dialog');
+
+function abrirConfirmacao(id) {
+  agendamentoId = id;
+  dialog.showModal();
+}
+
+const btnConfirmar = document.getElementById('confirmar')
+const btnFechar= document.getElementById('fechar')
+if (btnConfirmar && btnFechar){
+  document.getElementById('fechar').onclick = () => dialog.close();
+
+document.getElementById('confirmar').onclick = () => {
+  cancelarAgendamento(agendamentoId);
+  dialog.close();
+};
 }

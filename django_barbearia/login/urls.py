@@ -13,6 +13,5 @@ urlpatterns = [
     path("aviso-confirmacao/", views.renderPrecisaConfirmar, name="precisaConfirmar"),
     path('perfil/buscar-agendamento/', views.buscar_agendamento, name='buscar-agendamento'),
     path('logout/', views.logoutFunction, name='logout'),
-    path('agendamento/confirmar/<int:id>/', views.confirmar_agendamento, name="confirmar-agendamento"),
-path('agendamento/cancelar/<int:id>/', views.cancelar_agendamento, name="cancelar-agendamento"),
+    path('agendamento/cancelar/<int:id>/', views.cancelar_agendamento, name="cancelar-agendamento"),
 ]

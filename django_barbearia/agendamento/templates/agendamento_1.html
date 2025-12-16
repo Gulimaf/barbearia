@@ -29,7 +29,7 @@
             <li><a href="{% url 'homePerfil' %}"><i data-lucide="user" class="layout-list icon-nav"></i>PERFIL</a></li>
         </ul>
     </nav>
-    <section id="main-content-page-agendamento" class="main-content-page-agendamento">
+    <section id="main-content-page-agendamento" class="main-content-page-agendamento" style="margin-bottom:150px;">
         <p class="maren">AGENDAMENTO</p>
         <main>
             <div class="timeline">
@@ -58,12 +58,12 @@
                     <i data-lucide="search" class="search-character"></i>                
                 </div>
             </div>
-            <div class="resultado-search services-content selecionavel" id="resultado-search"></div>
-            <div class="container-next-btn">
-                <button class="btn-servico next-btn" style="border: 0;cursor: pointer;">PRÓXIMO</button>
-            </div>    
+            <div class="resultado-search services-content selecionavel" id="resultado-search"></div>    
         </main>
     </section>
+    <div class="container-next-btn">
+        <button class="btn-servico next-btn" style="border: 0;cursor: pointer;">PRÓXIMO</button>
+    </div>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="{% static 'js/script.js' %}"></script>
 </body>

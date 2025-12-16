@@ -342,8 +342,7 @@ header .itens-header{
 }
 .resultado-search{
     max-width: 500px;
-    max-height: 50vh;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     padding-right: 10px;
 }
@@ -362,8 +361,12 @@ header .itens-header{
 }
 .container-next-btn{
     width: 100%;
-    margin-top: 30px;
-    margin-bottom: 80px;
+    position: fixed;
+    bottom: 10%;
+    max-width: 410px;
+    height: 50px;
+    transform: translateX(-50%);
+    left: 50%;
 }
 .next-btn{
     display: block;
@@ -371,7 +374,7 @@ header .itens-header{
     background-color: #EFE5AD;
     text-align: center;
     padding: 10px 0px;
-    border-radius: 15px;
+    border-radius: 10px;
     text-decoration: none;
     color: black;
 }
@@ -776,12 +779,12 @@ a{
     cursor: pointer;
     border-radius: 15px;
     justify-content: center;
-    max-width: 30%;
     margin: 20px auto 0 auto;
 }
 .logoutF{
     text-decoration: none;
     color: white;
+    width: 30% !important;
 }
 .card-acoes {
     display: flex;
@@ -789,6 +792,7 @@ a{
     margin: 0 auto;
     width: 100%;
     justify-content: space-between;
+    
 }
 .btn-confirmar{
     background-color: green;
@@ -813,6 +817,55 @@ a{
     border-radius: 10px;
     margin-top: 20px;
     text-align: center;
+}
+#confirm-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
+  border-radius: 16px;
+  padding: 24px;
+  width: 90%;
+  max-width: 320px;
+  background: black;
+  color: white;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  z-index: 9999;
+  border: 1px solid #EFE5AD;
+}
+
+#confirm-dialog p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+#confirmar {
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#fechar {
+  background: #ecf0f1;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
 }
 @media (max-width:880px){
     .services-content{

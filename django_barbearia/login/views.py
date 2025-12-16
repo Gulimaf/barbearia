@@ -226,15 +226,13 @@ def logoutFunction(request):
     logout(request)
     return redirect('home')
 
-def confirmar_agendamento(request, id):
-    ag = get_object_or_404(Agendamentos, id=id, usuario=request.user)
-    ag.status = "confirmado"
-    ag.save()
-    return redirect("/perfil/")
-
-
 def cancelar_agendamento(request, id):
-    ag = get_object_or_404(Agendamentos, id=id, usuario=request.user)
-    ag.status = "cancelado"
-    ag.save()
-    return redirect("/perfil/")
+    if request.method == 'POST':
+        ag = get_object_or_404(Agendamentos, id=id, usuario=request.user)
+        ag.delete()
+        return JsonResponse({
+        'status': 'ok',
+        'mensagem': "Agendamento cancelado com sucesso",
+        'redirect_url': reverse('homePerfil') 
+        })
+    return JsonResponse({'status':'erro'}, status=400)
