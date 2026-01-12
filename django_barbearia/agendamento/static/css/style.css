@@ -1071,6 +1071,9 @@ table{
     margin-bottom: 120px;
     margin-top: 30px;
 }
+input[type="submit"]{
+    color: black !important;
+}
 @media (max-width:880px){
     .services-content{
         grid-template-columns: 1fr;
@@ -1087,5 +1090,16 @@ table{
     }
     .mainAdm{
         max-width: 90% !important;
+    }
+}
+
+@media (max-width:450px){
+    .dataFolga{
+        width: 100%;
+        max-width: 95%;
+    }
+    .inputHour{
+        width: 100%;
+        max-width: 95%;
     }
 }
