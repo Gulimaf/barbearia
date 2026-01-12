@@ -223,7 +223,7 @@ header .itens-header{
     margin: 0 auto;
     margin-top: 40px;
 }
-.services-content .card{
+ .card{
     display: flex;
     gap: 15px;
     border: 2px solid #EFE5AD;
@@ -231,18 +231,21 @@ header .itens-header{
     padding: 15px 20px;
     transition: scale .5s ease-in-out;
     position: relative;
+    width: 400px;
+    max-width: 100%;
 }
-.services-content .card img{
+ .card img{
     border-radius: 15px;
-    height: 100px;
+    width: 150px;
     height: 125px;
+    object-fit: cover;
 }
-.services-content .card .service-name{
+ .card .service-name{
     font-family: 'Bebas neue';
     font-size: 24px;
     font-weight: 600;
 }
-.services-content .card .service-price{
+ .card .service-price{
     font-family: 'Bebas neue';
     font-size: 20px;
     font-weight: 600;
@@ -252,7 +255,7 @@ header .itens-header{
     color: white;
     margin: 0;
 }
-.services-content .card .service-time{
+ .card .service-time{
     display: flex;
     align-items: center;
     gap: 5px;
@@ -276,7 +279,7 @@ header .itens-header{
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 0px;
   font-family: 'Open Sans', sans-serif;
   color: white;
   margin-top: 30px;
@@ -301,7 +304,7 @@ header .itens-header{
 }
 
 .line {
-  width: 30px;
+  width: 10px;
   height: 1px;
   background: white;
   opacity: 0.5;
@@ -464,21 +467,6 @@ color: white;
 .date:nth-child(7){
     border-right: 0;
 }
-.date:nth-child(14){
-    border-right: 0;
-}
-.date:nth-child(21){
-    border-right: 0;
-}
-.date:nth-child(28){
-    border-right: 0;
-}
-.date:nth-child(35){
-    border-right: 0;
-}
-.date:nth-child(42){
-    border-right: 0;
-}
 .date:hover {
   background-color: #EFE5AD;
   color: black;
@@ -518,6 +506,7 @@ color: white;
   align-items: center;
   justify-content: center;
   margin-top: 30px;
+  margin-bottom: 150px;
 }
 .resultado-horas span{
   border: 0.5px solid #EFE5AD;
@@ -641,7 +630,7 @@ color: white;
     width: 100%;
     max-width: 350px;
 }
-.main-content-perfil form {
+.formLogin {
     margin-top: 30px;
     display: flex;
     flex-direction: column;
@@ -672,7 +661,8 @@ color: white;
     background-color: black;
     color: white;
 }
-.main-content-perfil input[type="submit"]{
+.main-content-perfil input[type="submit"],
+.sendForm,.verFolgas,.verEx{
     background-color: #EFE5AD;
     padding: 5px 40px;
     border-radius: 20px;
@@ -680,27 +670,56 @@ color: white;
     cursor: pointer;
     font-size: 16px;
 }
-.errorForm{
-    width: 100%;
-    background-color: red;
-    border-radius: 5px;
-    color: white;
-    text-align: center;
-    margin-bottom: 10px;
-    padding: 5px 10px;
+.errorForm {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 9999;
+  border: 1px solid red;
+  background-color: black;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  animation: slideDown 0.3s ease, fadeOut 0.5s ease 6s forwards;
+  padding: 5px 5px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap; 
+  width: max-content; 
+  gap: 10px;
+}
+.errorForm #text{
+    width: auto;
+}
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -20px);
+  }
+}
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }
 .errorForm a {
     color: white;
     text-decoration: underline;
 }
 .success{
-    width: 100%;
-    background-color: green !important;
-    border-radius: 5px;
-    color: white;
-    text-align: center;
-    margin-bottom: 10px;
-    padding: 5px 10px;
+    border:1px solid green !important;
+    background-color: black;
 }
 .input-group{
     display: flex;
@@ -767,9 +786,6 @@ a{
 
 .card-body p {
     margin: 4px 0;
-}
-.success{
-    background-color: green !important;
 }
 .logout{
     background-color: red;
@@ -867,6 +883,194 @@ a{
 dialog::backdrop {
   background: rgba(0, 0, 0, 0.7);
 }
+#dataFolga{
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: 'Open Sans', sans-serif;
+    border-radius: 5px;
+    border: 1px solid #EFE5AD;
+    background-color: black;
+    color: white;
+    outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+#dataFolga::-webkit-inner-spin-button,
+#dataFolga::-webkit-calendar-picker-indicator {
+  opacity: 0.8;
+  cursor: pointer;
+}
+#dataFolga::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(2);
+}
+.folgas{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.res-folgas{
+    width: 100%;
+}
+.inputHour{
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: 'Open Sans', sans-serif;
+    border-radius: 5px;
+    border: 1px solid #EFE5AD;
+    background-color: black;
+    color: white;
+    outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.inputHour::-webkit-inner-spin-button {
+    opacity: 0;
+}
+.inputHour::-webkit-calendar-picker-indicator {
+    opacity: 0.8;
+    cursor: pointer;
+    filter: invert(1) brightness(2);
+}
+.select-padrao {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: 'Open Sans', sans-serif;
+    border-radius: 5px;
+    border: 1px solid #EFE5AD;
+    background-color: black;
+    color: white;
+    outline: none;
+    appearance: none;          
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.select-padrao option {
+    background-color: black;
+    color: white;
+}
+.select-padrao option:h {
+    background-color: #EFE5AD;
+}
+.container-select{
+    position: relative;
+}
+.select-icon{
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: white;
+    width: 18px;
+    height: 18px;
+}
+#nao_trabalha {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #EFE5AD;
+    border-radius: 4px;
+    background-color: black;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+#nao_trabalha:hover {
+    border-color: #f5c542;
+}
+
+#nao_trabalha:checked {
+    background-color: #EFE5AD;
+}
+
+#nao_trabalha::after {
+    content: '';
+    width: 6px;
+    height: 12px;
+    border: solid black;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%) rotate(45deg);
+    opacity: 0;
+}
+
+#nao_trabalha:checked::after {
+    opacity: 1;
+}
+table td, table th{
+    border: 1px solid #EFE5AD;
+    padding: 5px;
+}
+table{
+    border-collapse: collapse;
+    margin:0 auto;
+    text-align: center;
+    width: 500px;
+    margin-bottom: 30px;
+}
+.tabela-expediente{
+    max-width: 100%;
+    overflow-x: auto;
+}
+.mainAdm{
+    max-width: 404.12px !important;
+}
+.file-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.file-group input[type="file"] {
+    display: none;
+}
+.file-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    border-radius: 6px;
+    border: 1px dashed #ccc;
+    background: #111;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.file-label:hover {
+    background: #222;
+    border-color: #ff9800;
+    color: #ff9800;
+}
+.file-text {
+    pointer-events: none;
+}
+.card-func{
+    display: flex;
+}
+
+.card-func .content{
+    display: flex;
+    padding: 0px;
+    gap: 10px;
+}
+.area-funcs{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 120px;
+    margin-top: 30px;
+}
 @media (max-width:880px){
     .services-content{
         grid-template-columns: 1fr;
@@ -880,5 +1084,8 @@ dialog::backdrop {
     }
     .alert-card{
         max-width: 80%;
+    }
+    .mainAdm{
+        max-width: 90% !important;
     }
 }

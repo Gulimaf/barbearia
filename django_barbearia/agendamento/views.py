@@ -5,15 +5,29 @@ from django.http import JsonResponse, HttpResponse
 from .models import Agendamentos
 from datetime import datetime, time
 from django.utils import timezone
-import pytz
+from login.models import Folga, Expediente, Barbeiro
+from login.views import gerar_horarios
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db import IntegrityError
 # Create your views here.
 
 def index(request):
     return render(request,'index.html')
-
+def receberFunc(request):
+    if request.method != 'POST':
+        messages.error(request,'Método inválido')
+        return render(request, 'index.html')
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+        except:
+            return JsonResponse({'erro':'corpo da requisição inválido'})
+        barbeiroId = data.get('barbeiroId')
+        request.session['barbeiroId'] = barbeiroId
+        request.session.save()
+        return JsonResponse({'sucesso': True, 'redirect_url': reverse('agendamento')})
 def verificarHorarios(request):
     if request.method != 'POST':
         return JsonResponse({'ERRO':'Método não permitido'},status=405)
@@ -22,26 +36,42 @@ def verificarHorarios(request):
     except json.JSONDecodeError:
         return JsonResponse({'erro':'Corpo da requisição inválido'}, status=400)
     dia = data.get('dia')
+    barbeiroId = request.session.get('barbeiroId')
     if not dia:
         return JsonResponse({'ERRO' : 'Dia não recebido'})
+    if not barbeiroId:
+        return JsonResponse({'ERRO': 'Barbeiro não selecionado'},status=400)
+    
     request.session["diaAgendamento"] = dia
     request.session.save()
     print('Dia escolhido')
     print(request.session.get('diaAgendamento'))
-    expediente = {
-        'Monday': ["08:00", "09:00", "10:00","11:00","13:00","14:00","15:00","16:00","17:00","18:00"],
-        'Tuesday': ["08:00", "09:00", "10:00","11:00","13:00","14:00","15:00","16:00","17:00","18:00"],
-        'Wednesday' :["08:00", "09:00", "10:00","11:00","13:00","14:00","15:00","16:00","17:00","18:00"],
-        'Thursday':["08:00", "09:00", "10:00","11:00","13:00","14:00","15:00","16:00","17:00","18:00"],
-        'Friday': ["08:00", "09:00", "10:00","11:00","13:00","14:00","15:00","16:00","17:00","18:00"],
-        'Saturday':["09:00", "10:00","11:00","13:00","14:00","15:00"],
-        'Sunday':[]
-    }
     data_obj = datetime.strptime(dia, "%Y-%m-%d").date()
+    try:
+        barbeiro = Barbeiro.objects.get(id=barbeiroId)
+    except Barbeiro.DoesNotExist:
+        return JsonResponse({'ERRO':'Barbeiro inválido'},status=400)
+    if Folga.objects.filter(barbeiro=barbeiro,data=data_obj).exists():
+        return JsonResponse({
+            'dia': dia,
+            'folga': True,
+            'horariosDisponiveis': [],
+            'mensagem': 'Este barbeiro não atende nesta data'
+        })
+    diaSemanaParaBanco = data_obj.weekday()
+    expedienteExiste = Expediente.objects.filter(barbeiro=barbeiro,dia_semana=diaSemanaParaBanco).exists()
+    if not expedienteExiste:
+        horarios = []
+        return JsonResponse({"horariosDisponiveis" : horarios})
+    expediente = Expediente.objects.filter(barbeiro=barbeiro,dia_semana=diaSemanaParaBanco).first()
+    if not expediente:
+        return JsonResponse({'ERRO':'sem expediente válido'})
+    horarios = gerar_horarios(expediente.hora_inicio, expediente.hora_fim,expediente.intervalo,expediente.almoco_inicio,expediente.almoco_fim)
+
     diaSemana = data_obj.strftime("%A")
     inicio = datetime.combine(data_obj, time.min)
     fim = datetime.combine(data_obj, time.max)
-    agendamentos = Agendamentos.objects.filter(data__range=(inicio, fim))
+    agendamentos = Agendamentos.objects.filter(barbeiro=barbeiro,data__range=(inicio, fim))
     lista_agendamentos = [
         {
             'id': ag.id,    
@@ -52,7 +82,7 @@ def verificarHorarios(request):
         for ag in agendamentos
     ]
     horariosOcupados = [ag['hora'] for ag in lista_agendamentos]
-    disponiveis = [h for h in expediente[diaSemana] if h not in horariosOcupados]
+    disponiveis = [h for h in horarios if h not in horariosOcupados]
     return JsonResponse({
         'dia': dia,
         'agendamentos':lista_agendamentos,
@@ -128,19 +158,38 @@ def agendar(request):
             return JsonResponse({
             'sucesso': False,
             'mensagem': "Você deve fazer login para fazer o agendamento.",
-            'redirect_url': reverse('login')   # ajuste para o nome da sua URL
+            'redirect_url': reverse('login') 
             })
         dia = request.session.get('diaAgendamento')
         hora = request.session.get('horaEscolhida')
         data_agendada = datetime.strptime(f"{dia} {hora}", "%Y-%m-%d %H:%M")
         servico = request.session.get('servicos_escolhidos',[])
         valor = request.session.get('valorServicos')
-        ag = Agendamentos.objects.create(
-            usuario=request.user,
-            data=data_agendada,
-            servico=", ".join(servico),
-            status='confirmado',
-            valor=valor,
-        )
+        barbeiroId = request.session.get('barbeiroId')
+        try:
+            barbeiro = Barbeiro.objects.get(id=barbeiroId)
+        except Barbeiro.DoesNotExist:
+            return JsonResponse({'ERRO':'Barbeiro inválido'},status=400)
+        try:
+            ag = Agendamentos.objects.create(
+                usuario=request.user,
+                data=data_agendada,
+                servico=", ".join(servico),
+                status='confirmado',
+                valor=valor,
+                barbeiro=barbeiro,
+            )
+        except IntegrityError:
+            return JsonResponse({
+            'ERRO': 'Esse horário acabou de ser ocupado'
+            }, status=409)
         return JsonResponse({'sucesso': True, 'redirect_url': reverse('agendar')})
     return render(request, 'success.html')
+
+def verFunc(request):
+    if request.method != 'POST':
+        barbeiros = Barbeiro.objects.select_related('user').all()
+        return render(request, 'funcionarios.html', {
+            'barbeiros' : barbeiros
+        })
+    

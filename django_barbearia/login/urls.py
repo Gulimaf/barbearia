@@ -14,4 +14,12 @@ urlpatterns = [
     path('perfil/buscar-agendamento/', views.buscar_agendamento, name='buscar-agendamento'),
     path('logout/', views.logoutFunction, name='logout'),
     path('agendamento/cancelar/<int:id>/', views.cancelar_agendamento, name="cancelar-agendamento"),
+    path('folga/',views.criarFolga, name="folga"),
+    path('ver-folgas/', views.seeFolgas, name="verFolgas"),
+    path('folga/cancelar/<int:id>/', views.cancelar_folga, name="cancelar-folga"),
+    path('salvar-expediente/',views.salvarExpediente,name="expediente"),
+    path('ver-expediente/',views.verExpediente, name="verExpediente"),
+    path('cadastrar-barbeiro/',views.cadastroBarbeiro, name="cadastrarBarbeiro"),
+    path('ver-func/',views.verFunc, name="verFunc"),
+    path('demitir/<int:id>/',views.demitir,name="demitir"),
 ]

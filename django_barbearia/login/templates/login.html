@@ -46,13 +46,6 @@
                         <span class="eye"><i data-lucide="eye-closed"></i></span>
                     </div>
                 </div>
-                {% if messages %}
-                    <div class="messages">
-                        {% for message in messages %}
-                            <div class="errorForm">{{ message }}</div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
                 <input type="submit" value="Entrar" class="sendForm">
                 <div class="links">
                     <a href="{% url 'novaSenha' %}" class="esqueceu-senha">Esqueceu sua senha?</a>
@@ -61,6 +54,21 @@
             </form>
         </main>
     </section>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="errorForm {{message.tags}}">
+                    {% if 'success' in message.tags %}
+                        <i data-lucide="circle-check" style="color:#00c853;width:20px;height:20px;"></i>
+                    {% else %}
+                        <i data-lucide="circle-x" style="color:red;width:20px;height:20px;"></i>
+                    {% endif %}
+                    {{ message }}
+                </div>
+            {% endfor %}
+            <script>lucide.createIcons();</script>
+        </div>
+    {% endif %}
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="{% static 'js/script.js' %}"></script>
 </body>

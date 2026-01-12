@@ -1,3 +1,6 @@
-from django.contrib import admin
+from django.contrib import admin  
+from .models import Folga,Expediente, Barbeiro
 
-# Register your models here.
+admin.site.register(Folga)
+admin.site.register(Expediente)
+admin.site.register(Barbeiro)

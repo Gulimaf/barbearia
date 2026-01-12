@@ -32,23 +32,176 @@
     </nav>
     <section id="main-content-page-agendamento" class="main-content-page-agendamento">
         <p class="maren">PERFIL DE STAFF</p>
-        <main>
-              <div class="calendar-section calendario-staff">
+        <main class="mainAdm">
+            <div class="calendar-section calendario-staff">
                 <div id="calendar">
-                <div class="calendar-header">
-                    <span id="titulo-mes"></span>
+                    <div class="calendar-header">
+                        <span id="titulo-mes"></span>
+                    </div>
+                    <div class="calendar-days"></div>
+                    <div class="calendar-dates"></div>
                 </div>
-                <div class="calendar-days"></div>
-                <div class="calendar-dates"></div>
+            </div>  
+            <div class="res-agendamentos" id="listaAgendamentos"></div>
+            <a href="{% url 'logout' %}" class="logoutF"><p class="logout"><i data-lucide="log-out" class="icon-logout"></i> Sair</p></a>
+            <form action="{% url 'folga' %}" method="post" class="formLogin">
+                {% csrf_token %}
+                <p style="font-size: 24px;">Criar Folga</p>
+                <div class="form-group">
+                    <label for="barbeiro">Selecionar barbeiro</label>
+                    <div class="container-select">
+                        <select name="barbeiro" id="barbeiro" class="select-padrao">
+                            {% for barbeiro in barbeiros %}
+                                <option value="{{barbeiro.id}}">{{barbeiro.user.username}}</option>
+                            {%endfor%}
+                            </select>
+                        <i data-lucide="chevron-down" class="select-icon"></i>
+                    </div>
                 </div>
-                <div class="resultado-horas"></div>
+                <div class="form-group">
+                    <label for="dataFolga">Dia de folga</label>
+                    <input type="date" name="dataFolga" id="dataFolga" class="dataFolga">
+                </div>
+                <div class="form-group">
+                    <label for="motivoFolga">Motivo da folga</label>
+                    <input type="text" name="motivoFolga" id="motivoFolga" class="motivoFolga" placeholder="Motivo da folga">
+                </div>
+                <input type="submit" value="Criar folga" class="sendForm">
+            </form>
+            <div class="folgas">
+                <div class="res-folgas"></div>
+                <button class="fecharFolgas" style="text-decoration: none;color: black;margin: 10px; width: 100%;border-radius: 7px;height: 35px;background-color: #EFE5AD;border: none;cursor: pointer;font-size: 16px;">Fechar folgas</button>
+                <button class="verFolgas" style="text-decoration: none;color: black;; width: 100%;border-radius: 7px;height: 35px;">Ver folgas</button>
             </div>
-        </div>
-        <div class="res-agendamentos" id="listaAgendamentos">
-        </div>
-        <a href="{% url 'logout' %}" class="logoutF"><p class="logout"><i data-lucide="log-out" class="icon-logout"></i> Sair</p></a>
+            <div class="expediente">
+                <form action="{% url 'expediente'%}" method="post" class="formLogin">
+                    {% csrf_token %}
+                    <p style="font-size: 24px;">Expediente</p>
+                    <div class="form-group">
+                        <label for="barbeiro">Selecionar barbeiro</label>
+                        <div class="container-select">
+                            <select name="barbeiroEx" id="barbeiroEx" class="select-padrao">
+                                {% for barbeiro in barbeiros %}
+                                    <option value="{{barbeiro.id}}">{{barbeiro.user.username}}</option>
+                                {%endfor%}
+                                </select>
+                            <i data-lucide="chevron-down" class="select-icon"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="diaSemana">Dia da semana</label>
+                        <div class="container-select">
+                            <select name="diaSemana" id="diaSemana" class="select-padrao">
+                                <option value="0">Segunda</option>
+                                <option value="1">Terça</option>
+                                <option value="2">Quarta</option>
+                                <option value="3">Quinta</option>
+                                <option value="4">Sexta</option>
+                                <option value="5">Sabado</option>
+                                <option value="6">Domingo</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="select-icon"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="horaInicio">Início do expediente (HH:MM)</label>
+                        <input type="time" name="horaInicio" id="horaInicio" class="inputHour">
+                    </div>
+                    <div class="form-group">
+                        <label for="horaInicio">Fim do expediente (HH:MM)</label>
+                        <input type="time" name="horaFim" id="horaFim" class="inputHour">
+                    </div>
+                    <div class="form-group">
+                        <label for="horaInicio">Início do horário de almoço (HH:MM)</label>
+                        <input type="time" name="horaAlmocoInicio" id="horaAlmoco" class="inputHour">
+                    </div>
+                    <div class="form-group">
+                        <label for="horaInicio">Fim do horário de almoço (HH:MM)</label>
+                        <input type="time" name="horaAlmocoFim" id="horaAlmoc  o" class="inputHour">
+                    </div>
+                    <div class="form-group">
+                        <label for="intervalo">Intervalo entre horários</label>
+                        <div class="container-select">
+                            <select name="intervalo" id="intervalo" class="select-padrao">
+                                <option value="15">15 minutos</option>
+                                <option value="30">30 minutos</option>
+                                <option value="60">1 hora</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="select-icon"></i>
+                        </div>
+                    </div>
+                    <div class="form-group" style="flex-direction: row;align-items: center; gap: 10px;">
+                        <label for="nao_trabalha">Não trabalho neste dia</label>
+                        <input type="checkbox" name="nao_trabalha" id="nao_trabalha" style="width: auto;">
+                    </div>
+                    <input type="submit" value="Salvar" class="sendForm">
+                </form>
+            </div>
+            <div class="tabela-expedientes"></div>
+            <button class="fecharEx" style="text-decoration: none;color: black; width: 100%;margin-bottom:10px; border-radius: 7px;height: 35px;background-color: #EFE5AD;border: none;cursor: pointer;font-size: 16px;">Fechar expediente</button>
+            <button class="verEx" style="text-decoration: none;color: black;; width: 100%;border-radius: 7px;height: 35px;">Ver expediente</button>
+            <div class="employees">
+                <form action="{% url 'cadastrarBarbeiro' %}" method="post" class="formLogin" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <p style="font-size: 24px;">Cadastrar Barbeiro</p>
+                    <div class="form-group file-group">
+                        <label for="fotoBarbeiro">Foto do barbeiro</label>
+                        <label class="file-label">
+                            <span class="file-text" id="file-text">Selecionar arquivo</span>
+                            <input type="file" name="fotoBarbeiro" id="fotoBarbeiro" accept="image/*">
+                        </label>
+                    </div>
+                    <div class="form-group">
+                    <label for="usernameUsuario">Nome do barbeiro</label>
+                    <input type="text" placeholder="Username" name="usernameUsuario" class="usernameInput">
+                </div>
+                <div class="form-group">
+                    <label for="emailUsuario">Email</label>
+                    <input type="mail" placeholder="Email" name="emailUsuario" class="emailInput">
+                </div>
+                <div class="form-group">
+                    <label for="senhaUsuario">Senha</label>
+                    <div class="input-group">
+                        <input type="password"  placeholder="Senha" name="senhaUsuario" class="senha passInput">
+                        <span class="eye"><i data-lucide="eye-closed"></i></span>
+                    </div>
+                    <ul class="listaObrig" style="list-style: none;margin-top: 5px;">
+                        <li class="caracter itemLista">A senha deve conter 8 caracteres</li>
+                        <li class="umNum itemLista">A senha deve conter pelo menos 1 numero</li>
+                        <li class="umL itemLista">A senha deve conter pelo menos 1 letra maiúscula</li>
+                        <li class="especial itemLista">A senha deve conter pelo menos 1 caracter especial</li>
+                    </ul>
+                </div>
+                <input type="submit" value="Cadastrar Barbeiro" class="sendForm">
+                </form>
+                <div class="area-res-barber">
+                    <div class="res-barber"></div>
+                    <button class="fecharBarbeiros" style="text-decoration: none;color: black; width: 100%;margin-bottom:10px; border-radius: 7px;height: 35px;background-color: #EFE5AD;border: none;cursor: pointer;font-size: 16px;margin-top: 10px;">Fechar Lista de funcionários</button>
+                    <button class="verBarbeiros" style="text-decoration: none;color: black; width: 100%;margin-bottom:10px; border-radius: 7px;height: 35px;background-color: #EFE5AD;border: none;cursor: pointer;font-size: 16px;">Ver funcionários</button>
+                </div>
+            </div>
         </main>
     </section>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="errorForm {{message.tags}}">
+                    {% if 'success' in message.tags %}
+                        <i data-lucide="circle-check" style="color:#00c853;width:20px;height:20px;"></i>
+                    {% else %}
+                        <i data-lucide="circle-x" style="color:red;width:20px;height:20px;"></i>
+                    {% endif %}
+                    {{ message }}
+                </div>
+            {% endfor %}
+            <script>lucide.createIcons();</script>
+        </div>
+    {% endif %}
+    <dialog id="confirm-dialog">
+        <p class="confirm-text">Deseja cancelar esta folga?</p>
+        <button id="confirmar">OK</button>
+        <button id="fechar">Cancelar</button>
+    </dialog>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="{% static 'js/script.js' %}"></script>
 </body>

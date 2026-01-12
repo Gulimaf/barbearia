@@ -31,18 +31,18 @@
 <section id="main-content-page-agendamento" class="main-content-page-agendamento">
   <p class="maren">AGENDAMENTO</p>
   <main>
-  <div class="timeline">
+    <div class="timeline">
         <div class="timeline-step ativo">
-            <div class="circle"><i data-lucide="check"></i></div>
+            <div class="circle">1</div>
             <span>BARBEIRO</span>
         </div>
         <div class="line"></div>
-        <div class="timeline-step ativo">
-            <div class="circle"><i data-lucide="check"></i></div>
+        <div class="timeline-step">
+            <div class="circle">2</div>
             <span>SERVIÇOS</span>
         </div>
         <div class="line"></div>
-        <div class="timeline-step ativo">
+        <div class="timeline-step">
             <div class="circle">3</div>
             <span>DATA E HORA</span>
         </div>
@@ -52,18 +52,27 @@
             <span>RESUMO</span>
         </div>
     </div>
-  <div class="calendar-section calendario-agendamento">
-    <div id="calendar">
-      <div class="calendar-header">
-        <span id="titulo-mes"></span>
-      </div>
-      <div class="calendar-days"></div>
-      <div class="calendar-dates"></div>
+    <div class="area-funcs">
+        {% for barbeiro in barbeiros %}
+            <div class="card card-barbeiros" style="max-width: 90%;margin: 0 auto 0 auto;" data-id="{{barbeiro.id}}">
+                <div class="card-func">
+                    <div class="content">
+                        <div class="foto">
+                            <img src="{{barbeiro.foto.url}}" alt="">
+                        </div>
+                        <div class="text">
+                            <p class="barbeiro-nome">{{barbeiro.user.username}}</p>
+                            <p style="color: rgba(255, 255, 255, 0.432);">Barbeiro(a)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>Não há barbeiros cadastrados.</p>
+        {% endfor %}
     </div>
-    <div class="resultado-horas"></div>
-  </div>
   <div class="container-next-btn">
-    <button class="btn-horario next-btn" style="border: 0;cursor: pointer;">PRÓXIMO</button>
+    <button class="btn-func next-btn" style="border: 0;cursor: pointer;">PRÓXIMO</button>
   </div>
   </main>
 </section>
